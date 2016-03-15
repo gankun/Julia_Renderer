@@ -27,7 +27,7 @@ namespace JuliaRenderer
             Epsilon = epsilon;  
         }
        
-        public void Generate_GPU(Julia_Set Julia, float[] JPlane, float[] JC)
+        public void Generate_GPU(Julia_Set Julia, float[] JPlane, float[] JC, float[] Eye)
         {
             var xres = Julia.xres;
             var yres = Julia.yres;
@@ -38,6 +38,7 @@ namespace JuliaRenderer
             int[] dev_B = GPU.Allocate<int>(Julia.Blue);
             float[] dev_JPlane = GPU.Allocate<float>(4);
             float[] dev_JC = GPU.Allocate<float>(4);
+            float[] dev_Eye = GPU.Allocate<float>(3);
 
             // Copy arrays from Julia_Set to GPU
             GPU.CopyToDevice(Julia.Red, dev_R);
@@ -45,26 +46,21 @@ namespace JuliaRenderer
             GPU.CopyToDevice(Julia.Blue, dev_B);
             GPU.CopyToDevice(JPlane, dev_JPlane);
             GPU.CopyToDevice(JC, dev_JC);
+            GPU.CopyToDevice(Eye, dev_Eye);
 
             // Launch drawKernel on 128 threads and 128 blocks
             int i = 0;
-            int parallel = 64;
+            int parallel = 128;
             
             while (i < Julia.xres * Julia.yres)
             {             
                 GPU.Launch(1, 64)
                     .cudaDrawKernel(i, parallel, dev_R, dev_G, dev_B, Julia.xres, Julia.yres, 
-                    dev_JPlane, dev_JC, Niter, Bound, Epsilon);
-                // cudaDrawKernel(GThread thread, int startID, int runs, int[] R, int[] G, int[] B,
-            //int xres, int yres, int[] JPlane_I, int[] JC_I,
-            //int niter, float bound, float epsilon)
+                    dev_JPlane, dev_JC, Niter, Bound, Epsilon, dev_Eye);
+
                 i += parallel;
             }
-            /* 
-            GPU.Launch(parallel, 1)
-                    .cudaDrawKernel(dev_R, dev_G, dev_B, Julia.xres, Julia.yres,
-                    Niter, Bound, Epsilon);
-            */
+
             // Copy back color array from the GPU to the CPU
             GPU.CopyFromDevice(dev_R, Julia.Red);
             GPU.CopyFromDevice(dev_G, Julia.Green);
@@ -76,6 +72,7 @@ namespace JuliaRenderer
             GPU.Free(dev_B);
             GPU.Free(dev_JPlane);
             GPU.Free(dev_JC);
+            GPU.Free(dev_Eye);
         }
 
         /* 
@@ -83,27 +80,27 @@ namespace JuliaRenderer
          * a constant & Plane value. This approach uses the CPU to compute each pixel.
          * There is no parallelization used.
          */ 
-        public void Generate_CPU(Julia_Set Julia, int[] JPlane_I, int[] JC_I)
+        public void Generate_CPU(Julia_Set Julia, float[] JPlane_I, float[] JC_I, float[] Eye)
         {
             var JPlane = new Form1.Vector4(JPlane_I[0], JPlane_I[1], JPlane_I[2], JPlane_I[3]);
             var JC = new Form1.Vector4(JC_I[0], JC_I[1], JC_I[2], JC_I[3]);
-
-
+            var eye = new Form1.Vector3(Eye[0], Eye[1], Eye[2]);
+            
             Form1.Vector3 light = new Form1.Vector3(2.5F, -2F, 4F);
             Form1.Vector3 target = new Form1.Vector3(0F, 0F, 0F);
+
+
             int xres = Julia.xres;
             int yres = Julia.yres;
             for (int x = 0; x < Julia.xres; x++)
             {
                 for (int y = 0; y < Julia.yres; y++)
-                {
-
-
+                {                    
                     float nx = ((float)x - xres / 2.0F) / ((float)xres / 2.0F);
                     float ny = ((float)-y + yres / 2.0F) / ((float)yres / 2.0F);
 
                     // Create position for eye and direction eye is facing.
-                    Form1.Vector3 eye = new Form1.Vector3(0, 0, 4);
+                    
                     Form1.Vector3 Ray = Form1.lookAt(eye, target, nx, ny, 2.0F);
 
                     Form1.Vector3 Background = new Form1.Vector3(120F + (120 * nx),

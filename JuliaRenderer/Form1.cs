@@ -41,6 +41,8 @@ namespace JuliaRenderer
 
             float[] JPlane = new float[4];
             float[] JC = new float[4];
+            float[] Eye = new float[3];
+
             bool parsed = true;
             parsed &= float.TryParse(JPlaneX_In.Text, out JPlane[0]);
             parsed &= float.TryParse(JPlaneY_In.Text, out JPlane[1]);
@@ -63,6 +65,17 @@ namespace JuliaRenderer
                 OutputBox.Text = "All values for JC must be a valid float";
                 return;
             }
+
+            parsed &= float.TryParse(EyeX_In.Text, out Eye[0]);
+            parsed &= float.TryParse(EyeY_In.Text, out Eye[1]);
+            parsed &= float.TryParse(EyeZ_In.Text, out Eye[2]);
+
+            if (!parsed)
+            {
+                OutputBox.Text = "All values for Eye must be a valid float";
+                return;
+            }
+
             float epsilon;
             parsed &= float.TryParse(Epsilon_In.Text, out epsilon);
 
@@ -71,14 +84,24 @@ namespace JuliaRenderer
                 OutputBox.Text = "Value for Epsilon must be a valid float";
                 return;
             }
+            if (epsilon <= 0)
+            {
+                OutputBox.Text = "Value for Epsilon must be greater than zero";
+                return;
+            }
 
 
             Julia_Set Julia = new Julia_Set(500, 500);
             Julia_Raytracer Tracer = new Julia_Raytracer(GPU, iter, epsilon, 1.99F);
             
-            Tracer.Generate_GPU(Julia, 
-                JPlane,
-                JC);
+            if (UseCPU.Checked)
+            {
+                Tracer.Generate_CPU(Julia, JPlane, JC, Eye);
+            }
+            else
+            {
+                Tracer.Generate_GPU(Julia, JPlane, JC, Eye);
+            }
 
             string target = @"C:\Users\Matthew\Project\WriteLines2.ppm";
             Julia.Print_PPM(target);
@@ -107,10 +130,11 @@ namespace JuliaRenderer
         [Cudafy]
         public static void cudaDrawKernel(GThread thread, int startID, int runs, int[] R, int[] G, int[] B,
             int xres, int yres, float[] JPlane_I, float[] JC_I,
-            int niter, float bound, float epsilon)
+            int niter, float bound, float epsilon, float[] Eye)
         {
-            var JPlane = new Vector4(JPlane_I[0], JPlane_I[1], JPlane_I[2], JPlane_I[3]);
-            var JC = new Vector4(JC_I[0], JC_I[1], JC_I[2], JC_I[3]);
+            Vector4 JPlane = new Vector4(JPlane_I[0], JPlane_I[1], JPlane_I[2], JPlane_I[3]);
+            Vector4 JC = new Vector4(JC_I[0], JC_I[1], JC_I[2], JC_I[3]);
+            Vector3 eye = new Vector3(Eye[0], Eye[1], Eye[2]);
 
             int tid = thread.threadIdx.x + startID;
             Vector3 light = new Vector3(2.5F, -2F, 4F);
@@ -130,7 +154,7 @@ namespace JuliaRenderer
                 float ny = ((float)-y + yres / 2.0F) / ((float)yres / 2.0F);
 
                 // Create position for eye and direction eye is facing.
-                Vector3 eye = new Vector3(0, 0, 4);
+                
                 Vector3 Ray = lookAt(eye, target, nx, ny, 2.0F);
 
                 var Background = new Vector3(
@@ -146,6 +170,9 @@ namespace JuliaRenderer
                 R[y * xres + x] = (int)(Color.X * 255);
                 G[y * xres + x] = (int)(Color.Y * 255);
                 B[y * xres + x] = (int)(Color.Z * 255);
+                R[y * xres + x] = (int)(GMath.Min(255, GMath.Max(0, Color.X * 255)));
+                G[y * xres + x] = (int)(GMath.Min(255, GMath.Max(0, Color.Y * 255)));
+                B[y * xres + x] = (int)(GMath.Min(255, GMath.Max(0, Color.Z * 255)));
 
                 tid += thread.blockDim.x;
             }
@@ -194,7 +221,7 @@ namespace JuliaRenderer
                     // Pass the color to determine shadows
                     rgb = Shadow(r0, light, rgb, normal, julia_C, julia_Plane,
                         exponent, niter, bound, epsilon);
-
+                    
                     return rgb;
                 }
             }
