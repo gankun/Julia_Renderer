@@ -14,8 +14,8 @@ namespace JuliaRenderer
     {
 
         private float Bound = 2;
-        private float Epsilon = .001F;
-        private int Niter = 3;
+        public float Epsilon = .001F;
+        public int Niter = 3;
         private Cudafy.Host.GPGPU GPU;
         
         public Julia_Raytracer(Cudafy.Host.GPGPU gpu, int niter, float epsilon, float bound)

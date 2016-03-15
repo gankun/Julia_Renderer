@@ -16,9 +16,21 @@ namespace JuliaRenderer
 {
     public partial class Form1 : Form
     {
+
+        private Julia_Set Julia;
+        private Julia_Raytracer Tracer;
+
         public Form1()
         {
+            // Prepare GPU and Translate Code to Cuda
+            CudafyModule km = CudafyTranslator.Cudafy();
+            var GPU = CudafyHost.GetDevice(CudafyModes.Target, CudafyModes.DeviceId);
+            GPU.LoadModule(km);
+
             InitializeComponent();
+
+            Julia = new Julia_Set(500, 500);
+            Tracer = new Julia_Raytracer(GPU, 1, .01F, 1.99F);
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -28,12 +40,6 @@ namespace JuliaRenderer
 
         private void renderButton_Click_1(object sender, EventArgs e)
         {
-
-            
-
-            CudafyModule km = CudafyTranslator.Cudafy();
-            var GPU = CudafyHost.GetDevice(CudafyModes.Target, CudafyModes.DeviceId);
-            GPU.LoadModule(km);
 
             // Get values to use from the Windows form.
 
@@ -90,9 +96,8 @@ namespace JuliaRenderer
                 return;
             }
 
-
-            Julia_Set Julia = new Julia_Set(500, 500);
-            Julia_Raytracer Tracer = new Julia_Raytracer(GPU, iter, epsilon, 1.99F);
+            Tracer.Epsilon = epsilon;
+            Tracer.Niter = (int) Iteration_Count.Value;
             
             if (UseCPU.Checked)
             {
@@ -102,9 +107,6 @@ namespace JuliaRenderer
             {
                 Tracer.Generate_GPU(Julia, JPlane, JC, Eye);
             }
-
-            string target = @"C:\Users\Matthew\Project\WriteLines2.ppm";
-            Julia.Print_PPM(target);
 
             var bit = Julia.MakeBitmap();
             pictureBox1.Image = bit;
@@ -345,13 +347,12 @@ namespace JuliaRenderer
 
             // set the base color of the set
             Vector3 dif = new Vector3(.10F, .50F, .85F);
-            dif = new Vector3(.9F, .9F, .9F);
-            dif = new Vector3(.8F, 1F, .04F);
-            dif = new Vector3(.01F, .7F, .95F); // blue color
             dif = new Vector3(.50F, .80F, .45F);
+
             // shininess and the amplitude of highlight
-            const int shine = 6;
-            const float amp = .45F;
+            const int shine = 5;
+            //const float amp = .45F;
+            const float amp = .6F;
 
             Vector3 LV = Normalize3(Sub3(light, p)); // vector to the light source
             Vector3 EV = Normalize3(Sub3(eye, p));   // vector to the eye
@@ -360,10 +361,8 @@ namespace JuliaRenderer
             Vector3 refl = Sub3(LV, Scale3(N, 2.0F * coA)); // the reflected Vector
 
             // Add some normal to the color
-            dif = Add3(dif,
-                Scale3(
-                    new Vector3(GMath.Abs(N.X), GMath.Abs(N.Y), GMath.Abs(N.Z)),
-                    .250F));
+            dif = Add3(dif, Scale3(new Vector3(
+                GMath.Abs(N.X), GMath.Abs(N.Y), GMath.Abs(N.Z)), .250F));
 
             float addend = amp * GMath.Pow(GMath.Max(Dot3(EV, refl), 0.0F), shine);
 
@@ -638,6 +637,26 @@ namespace JuliaRenderer
         private void splitContainer1_Panel2_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        private void RayTracing_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void saveButton_Click(object sender, EventArgs e)
+        {
+            // Save Image to File
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+  
+                Julia.Print_PPM(saveFileDialog1.FileName);
+            }
+        }
+
+        private void animateButton_Click(object sender, EventArgs e)
+        {
+            // Prepare Animations
         }
 
      
