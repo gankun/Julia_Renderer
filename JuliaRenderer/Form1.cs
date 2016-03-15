@@ -26,7 +26,7 @@ namespace JuliaRenderer
 
         }
 
-        private void renderButton_Click(object sender, EventArgs e)
+        private void renderButton_Click_1(object sender, EventArgs e)
         {
 
             
@@ -35,12 +35,50 @@ namespace JuliaRenderer
             var GPU = CudafyHost.GetDevice(CudafyModes.Target, CudafyModes.DeviceId);
             GPU.LoadModule(km);
 
+            // Get values to use from the Windows form.
+
+            int iter = (int) Iteration_Count.Value;
+
+            float[] JPlane = new float[4];
+            float[] JC = new float[4];
+            bool parsed = true;
+            parsed &= float.TryParse(JPlaneX_In.Text, out JPlane[0]);
+            parsed &= float.TryParse(JPlaneY_In.Text, out JPlane[1]);
+            parsed &= float.TryParse(JPlaneZ_In.Text, out JPlane[2]);
+            parsed &= float.TryParse(JPlaneW_In.Text, out JPlane[3]);
+
+            if (!parsed)
+            {
+                OutputBox.Text = "All values for JPlane must be a valid float";
+                return;
+            }
+
+            parsed &= float.TryParse(JCX_In.Text, out JC[0]);
+            parsed &= float.TryParse(JCY_In.Text, out JC[1]);
+            parsed &= float.TryParse(JCZ_In.Text, out JC[2]);
+            parsed &= float.TryParse(JCW_In.Text, out JC[3]);
+
+            if (!parsed)
+            {
+                OutputBox.Text = "All values for JC must be a valid float";
+                return;
+            }
+            float epsilon;
+            parsed &= float.TryParse(Epsilon_In.Text, out epsilon);
+
+            if (!parsed)
+            {
+                OutputBox.Text = "Value for Epsilon must be a valid float";
+                return;
+            }
+
+
             Julia_Set Julia = new Julia_Set(500, 500);
-            Julia_Raytracer Tracer = new Julia_Raytracer(GPU, 3, .001F, 1.99F);
+            Julia_Raytracer Tracer = new Julia_Raytracer(GPU, iter, epsilon, 1.99F);
             
             Tracer.Generate_GPU(Julia, 
-                new int[] {0, 0, 0, 0},
-                new int[] {0, 0, 0, 0});
+                JPlane,
+                JC);
 
             string target = @"C:\Users\Matthew\Project\WriteLines2.ppm";
             Julia.Print_PPM(target);
@@ -50,58 +88,25 @@ namespace JuliaRenderer
             pictureBox1.Invalidate();  
 
         }
-        [Cudafy]
-        public static void DummyDrawKernel(GThread thread, int startID, int runs, int[] R, int[] G, int[] B,
-            int xres, int yres, int[] JPlane_I, int[] JC_I,
-            int niter, float bound, float epsilon)
-        {
-            int tid = thread.threadIdx.x + startID;
-            while (tid < xres * yres) // && (tid < startID + runs))
-            {
-                if (tid > startID + runs)
-                {
-                    break;
-                }
-
-                int x = tid % xres;
-                int y = tid / xres;
-
-                float nx = ((float)x - xres / 2.0F) / ((float)xres / 2.0F);
-                float ny = ((float)-y + yres / 2.0F) / ((float)yres / 2.0F);
-
-                Vector3 Color = new Vector3(
-                   .5F + (.5F * nx),
-                   .5F + (.5F * nx), 
-                   .5F + (.5F * ny));
-
-                var eye = new Vector3(0, 0, 4);
-                var target = new Vector3(0, 0, 0);
-                if (Length3(intersectBound(eye, lookAt(eye, target, nx, ny, 2.0F), 1.99F)) > .001F)
-                {
-                   Color = new Vector3(0, .1F, 0);
-                }
-                /*
-                if (GMath.Abs(nx) < .1)
-                {
-                    if (GMath.Abs(ny) < .1)
-                    {
-                        Color = new Vector3(0, .1F, 0);
-                    }
-                }
-                */
-                // Assign each color to the matrix
-                R[y * xres + x] = (int)(Color.X * 255);
-                G[y * xres + x] = (int)(Color.Y * 255);
-                B[y * xres + x] = (int)(Color.Z * 255);
-
-                tid += thread.blockDim.x;
-            }
-
-        }
-
+        
+        /*
+         * Primary GPU Kernel to Raytrace a given Julia Set.
+         * Runs on the GPU and parallelizes the task into multiple threads.
+         * To limit time on the GPU we perform the job in chunks, only
+         * computing so many pixels at a time. 
+         * startID is the pixel # (0 to xres * yres - 1) to start from
+         * runs is the number of pixels to compute in this one job.
+         * R,G,B are arrays for color on the device
+         * xres, yres are the x and y resolutions of the image.
+         * JPlane_I is the array representing the Plane Slice for the Set.
+         * JC_I is the constant to apply with each Julia Set iteration.
+         * niter is the number of iterations to apply.
+         * bound is the bounding sphere for the set. (Close to 2)
+         * epsilon is the distance within the set to color a pixel.         * 
+         */
         [Cudafy]
         public static void cudaDrawKernel(GThread thread, int startID, int runs, int[] R, int[] G, int[] B,
-            int xres, int yres, int[] JPlane_I, int[] JC_I,
+            int xres, int yres, float[] JPlane_I, float[] JC_I,
             int niter, float bound, float epsilon)
         {
             var JPlane = new Vector4(JPlane_I[0], JPlane_I[1], JPlane_I[2], JPlane_I[3]);
@@ -569,6 +574,41 @@ namespace JuliaRenderer
         }
 
         private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void tableLayoutPanel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox1_TextChanged_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void renderButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tableLayoutPanel3_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void splitContainer1_Panel2_Paint(object sender, PaintEventArgs e)
         {
 
         }

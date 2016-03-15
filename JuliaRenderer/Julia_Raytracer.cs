@@ -27,7 +27,7 @@ namespace JuliaRenderer
             Epsilon = epsilon;  
         }
        
-        public void Generate_GPU(Julia_Set Julia, int[] JPlane, int[] JC)
+        public void Generate_GPU(Julia_Set Julia, float[] JPlane, float[] JC)
         {
             var xres = Julia.xres;
             var yres = Julia.yres;
@@ -36,8 +36,8 @@ namespace JuliaRenderer
             int[] dev_R = GPU.Allocate<int>(Julia.Red);
             int[] dev_G = GPU.Allocate<int>(Julia.Green);
             int[] dev_B = GPU.Allocate<int>(Julia.Blue);
-            int[] dev_JPlane = GPU.Allocate<int>(4);
-            int[] dev_JC = GPU.Allocate<int>(4);
+            float[] dev_JPlane = GPU.Allocate<float>(4);
+            float[] dev_JC = GPU.Allocate<float>(4);
 
             // Copy arrays from Julia_Set to GPU
             GPU.CopyToDevice(Julia.Red, dev_R);
@@ -48,11 +48,11 @@ namespace JuliaRenderer
 
             // Launch drawKernel on 128 threads and 128 blocks
             int i = 0;
-            int parallel = 1;
+            int parallel = 64;
             
             while (i < Julia.xres * Julia.yres)
             {             
-                GPU.Launch(1, 1)
+                GPU.Launch(1, 64)
                     .cudaDrawKernel(i, parallel, dev_R, dev_G, dev_B, Julia.xres, Julia.yres, 
                     dev_JPlane, dev_JC, Niter, Bound, Epsilon);
                 // cudaDrawKernel(GThread thread, int startID, int runs, int[] R, int[] G, int[] B,
