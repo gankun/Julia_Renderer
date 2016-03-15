@@ -19,6 +19,14 @@ namespace JuliaRenderer
 
         private Julia_Set Julia;
         private Julia_Raytracer Tracer;
+        private System.Drawing.Bitmap[] Image_list;
+        private float[] JPlane;
+        private float[] JC;
+        private float[] Eye;
+        private float epsilon;
+
+        private float[] JPlane_delta;
+        private float[] JC_delta;
 
         public Form1()
         {
@@ -31,6 +39,17 @@ namespace JuliaRenderer
 
             Julia = new Julia_Set(500, 500);
             Tracer = new Julia_Raytracer(GPU, 1, .01F, 1.99F);
+
+            Image_list = new System.Drawing.Bitmap[200];
+
+            // Initialize all values that will go in fields.
+             JPlane = new float[4];
+             JC = new float[4];
+             Eye = new float[3];
+
+             JPlane_delta = new float[4];
+             JC_delta = new float[4];
+
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -45,54 +64,8 @@ namespace JuliaRenderer
 
             int iter = (int) Iteration_Count.Value;
 
-            float[] JPlane = new float[4];
-            float[] JC = new float[4];
-            float[] Eye = new float[3];
-
-            bool parsed = true;
-            parsed &= float.TryParse(JPlaneX_In.Text, out JPlane[0]);
-            parsed &= float.TryParse(JPlaneY_In.Text, out JPlane[1]);
-            parsed &= float.TryParse(JPlaneZ_In.Text, out JPlane[2]);
-            parsed &= float.TryParse(JPlaneW_In.Text, out JPlane[3]);
-
-            if (!parsed)
+            if (!Validate_Fields(false))
             {
-                OutputBox.Text = "All values for JPlane must be a valid float";
-                return;
-            }
-
-            parsed &= float.TryParse(JCX_In.Text, out JC[0]);
-            parsed &= float.TryParse(JCY_In.Text, out JC[1]);
-            parsed &= float.TryParse(JCZ_In.Text, out JC[2]);
-            parsed &= float.TryParse(JCW_In.Text, out JC[3]);
-
-            if (!parsed)
-            {
-                OutputBox.Text = "All values for JC must be a valid float";
-                return;
-            }
-
-            parsed &= float.TryParse(EyeX_In.Text, out Eye[0]);
-            parsed &= float.TryParse(EyeY_In.Text, out Eye[1]);
-            parsed &= float.TryParse(EyeZ_In.Text, out Eye[2]);
-
-            if (!parsed)
-            {
-                OutputBox.Text = "All values for Eye must be a valid float";
-                return;
-            }
-
-            float epsilon;
-            parsed &= float.TryParse(Epsilon_In.Text, out epsilon);
-
-            if (!parsed)
-            {
-                OutputBox.Text = "Value for Epsilon must be a valid float";
-                return;
-            }
-            if (epsilon <= 0)
-            {
-                OutputBox.Text = "Value for Epsilon must be greater than zero";
                 return;
             }
 
@@ -140,6 +113,7 @@ namespace JuliaRenderer
 
             int tid = thread.threadIdx.x + startID;
             Vector3 light = new Vector3(2.5F, -2F, 4F);
+            light = new Vector3(.1F, 0F, 4F);
             Vector3 target = new Vector3(0F, 0F, 0F);
 
             while (tid < xres * yres)
@@ -160,9 +134,11 @@ namespace JuliaRenderer
                 Vector3 Ray = lookAt(eye, target, nx, ny, 2.0F);
 
                 var Background = new Vector3(
-                    .3F + (.2F * nx),
-                   .1F, 
-                   .5F + (.3F * ny));
+                    .3F + (.25F * nx),
+                   .6F, 
+                   .7F + (.2F * ny));
+
+
                 var Color = Background;
                 // Use raytracing for each pixel
                 int exponent = 2;
@@ -348,6 +324,8 @@ namespace JuliaRenderer
             // set the base color of the set
             Vector3 dif = new Vector3(.10F, .50F, .85F);
             dif = new Vector3(.50F, .80F, .45F);
+
+            dif = new Vector3(.30F, .80F, .95F);
 
             // shininess and the amplitude of highlight
             const int shine = 5;
@@ -656,7 +634,127 @@ namespace JuliaRenderer
 
         private void animateButton_Click(object sender, EventArgs e)
         {
-            // Prepare Animations
+            // Prepare Animations.
+            // We do this by saving up to 100 frames and then displaying them.
+
+            // Get values to use from the Windows form.
+
+            int iter = (int)Iteration_Count.Value;
+
+            if (!Validate_Fields(true))
+            {
+                return;
+            }
+
+            Tracer.Epsilon = epsilon;
+            Tracer.Niter = (int)Iteration_Count.Value;
+
+            for (int i = 0; i < (int)frames_count.Value; i++)
+            {
+               
+
+                if (UseCPU.Checked)
+                {
+                    Tracer.Generate_CPU(Julia, JPlane, JC, Eye);
+                }
+                else
+                {
+                    Tracer.Generate_GPU(Julia, JPlane, JC, Eye);
+                }
+
+                var bit = Julia.MakeBitmap();
+                pictureBox1.Image = bit;
+                
+                pictureBox1.Refresh();
+
+                Image_list[i] = bit;
+
+                JPlane[0] += JPlane_delta[0];
+                JPlane[1] += JPlane_delta[1];
+                JPlane[2] += JPlane_delta[2];
+                JPlane[3] += JPlane_delta[3];
+
+                JC[0] += JC_delta[0];
+                JC[1] += JC_delta[1];
+                JC[2] += JC_delta[2];
+                JC[3] += JC_delta[3];
+                
+
+            }
+        }
+
+        private bool Validate_Fields(bool Animate)
+        {
+
+            bool parsed_Plane = true;
+            parsed_Plane &= float.TryParse(JPlaneX_In.Text, out JPlane[0]);
+            parsed_Plane &= float.TryParse(JPlaneY_In.Text, out JPlane[1]);
+            parsed_Plane &= float.TryParse(JPlaneZ_In.Text, out JPlane[2]);
+            parsed_Plane &= float.TryParse(JPlaneW_In.Text, out JPlane[3]);
+            if (!parsed_Plane)
+            {
+                OutputBox.Text += "\nAll values for JPlane must be a valid float";
+            }
+
+            bool parsed_C = true;
+            parsed_C &= float.TryParse(JCX_In.Text, out JC[0]);
+            parsed_C &= float.TryParse(JCY_In.Text, out JC[1]);
+            parsed_C &= float.TryParse(JCZ_In.Text, out JC[2]);
+            parsed_C &= float.TryParse(JCW_In.Text, out JC[3]);
+
+            if (!parsed_C)
+            {
+                OutputBox.Text += "\nAll values for JC must be a valid float";
+            }
+
+            bool parsed_Eye = true;
+            parsed_Eye &= float.TryParse(EyeX_In.Text, out Eye[0]);
+            parsed_Eye &= float.TryParse(EyeY_In.Text, out Eye[1]);
+            parsed_Eye &= float.TryParse(EyeZ_In.Text, out Eye[2]);
+
+            if (!parsed_Eye)
+            {
+                OutputBox.Text += "\nAll values for Eye must be a valid float";
+            }
+            bool parsed_epsilon = true;
+            parsed_epsilon &= float.TryParse(Epsilon_In.Text, out epsilon);
+
+            if (!parsed_epsilon)
+            {
+                OutputBox.Text = "Value for Epsilon must be a float greater than zero";
+            }
+            if (epsilon <= 0)
+            {
+                OutputBox.Text = "Value for Epsilon must be a float greater than zero";
+            }
+            // If not animating, no need for further fields.
+            if (!Animate)
+            {
+                return (parsed_Eye && parsed_C && parsed_Plane && parsed_epsilon);
+            }
+
+            bool parsed_Plane_D = true;
+            parsed_Plane_D &= float.TryParse(JPlaneX_Ani.Text, out JPlane_delta[0]);
+            parsed_Plane_D &= float.TryParse(JPlaneY_Ani.Text, out JPlane_delta[1]);
+            parsed_Plane_D &= float.TryParse(JPlaneZ_Ani.Text, out JPlane_delta[2]);
+            parsed_Plane_D &= float.TryParse(JPlaneW_Ani.Text, out JPlane_delta[3]);
+            if (!parsed_Plane_D)
+            {
+                OutputBox.Text += "\nAll values for JPlane Delta must be a valid float";
+            }
+
+            bool parsed_C_D = true;
+            parsed_C_D &= float.TryParse(JCX_Ani.Text, out JC_delta[0]);
+            parsed_C_D &= float.TryParse(JCY_Ani.Text, out JC_delta[1]);
+            parsed_C_D &= float.TryParse(JCZ_Ani.Text, out JC_delta[2]);
+            parsed_C_D &= float.TryParse(JCW_Ani.Text, out JC_delta[3]);
+
+            if (!parsed_C)
+            {
+                OutputBox.Text += "\nAll values for JC Delta must be a valid float";
+            }
+
+            return parsed_Plane_D && parsed_C_D;
         }
 
      

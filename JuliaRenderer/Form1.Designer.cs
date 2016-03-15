@@ -80,21 +80,21 @@
             this.label19 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
-            this.textBox6 = new System.Windows.Forms.TextBox();
-            this.textBox7 = new System.Windows.Forms.TextBox();
-            this.textBox8 = new System.Windows.Forms.TextBox();
+            this.frames_count = new System.Windows.Forms.NumericUpDown();
+            this.JPlaneX_Ani = new System.Windows.Forms.TextBox();
+            this.JPlaneY_Ani = new System.Windows.Forms.TextBox();
+            this.JPlaneZ_Ani = new System.Windows.Forms.TextBox();
             this.label23 = new System.Windows.Forms.Label();
             this.label24 = new System.Windows.Forms.Label();
             this.label25 = new System.Windows.Forms.Label();
-            this.textBox10 = new System.Windows.Forms.TextBox();
-            this.textBox11 = new System.Windows.Forms.TextBox();
-            this.textBox12 = new System.Windows.Forms.TextBox();
+            this.JCX_Ani = new System.Windows.Forms.TextBox();
+            this.JCY_Ani = new System.Windows.Forms.TextBox();
+            this.JCZ_Ani = new System.Windows.Forms.TextBox();
             this.label26 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.JPlaneW_Ani = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.JCW_Ani = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tableLayoutPanel3.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -106,7 +106,7 @@
             this.tableLayoutPanel4.SuspendLayout();
             this.Animations.SuspendLayout();
             this.tableLayoutPanel5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.frames_count)).BeginInit();
             this.SuspendLayout();
             // 
             // openFileDialog1
@@ -710,24 +710,24 @@
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel5.Controls.Add(this.label18, 0, 1);
-            this.tableLayoutPanel5.Controls.Add(this.label19, 0, 2);
-            this.tableLayoutPanel5.Controls.Add(this.label20, 0, 3);
-            this.tableLayoutPanel5.Controls.Add(this.label21, 0, 4);
-            this.tableLayoutPanel5.Controls.Add(this.numericUpDown1, 1, 0);
-            this.tableLayoutPanel5.Controls.Add(this.textBox6, 1, 2);
-            this.tableLayoutPanel5.Controls.Add(this.textBox7, 1, 3);
-            this.tableLayoutPanel5.Controls.Add(this.textBox8, 1, 4);
-            this.tableLayoutPanel5.Controls.Add(this.label23, 2, 2);
-            this.tableLayoutPanel5.Controls.Add(this.label24, 2, 3);
-            this.tableLayoutPanel5.Controls.Add(this.label25, 2, 4);
-            this.tableLayoutPanel5.Controls.Add(this.textBox10, 3, 2);
-            this.tableLayoutPanel5.Controls.Add(this.textBox11, 3, 3);
-            this.tableLayoutPanel5.Controls.Add(this.textBox12, 3, 4);
+            this.tableLayoutPanel5.Controls.Add(this.frames_count, 1, 0);
+            this.tableLayoutPanel5.Controls.Add(this.JPlaneX_Ani, 1, 2);
+            this.tableLayoutPanel5.Controls.Add(this.JPlaneY_Ani, 1, 3);
+            this.tableLayoutPanel5.Controls.Add(this.JPlaneZ_Ani, 1, 4);
+            this.tableLayoutPanel5.Controls.Add(this.JCY_Ani, 3, 3);
+            this.tableLayoutPanel5.Controls.Add(this.JCZ_Ani, 3, 4);
             this.tableLayoutPanel5.Controls.Add(this.label26, 0, 0);
-            this.tableLayoutPanel5.Controls.Add(this.label14, 0, 5);
-            this.tableLayoutPanel5.Controls.Add(this.textBox1, 1, 5);
-            this.tableLayoutPanel5.Controls.Add(this.label15, 2, 5);
-            this.tableLayoutPanel5.Controls.Add(this.textBox2, 3, 5);
+            this.tableLayoutPanel5.Controls.Add(this.JPlaneW_Ani, 1, 5);
+            this.tableLayoutPanel5.Controls.Add(this.JCW_Ani, 3, 5);
+            this.tableLayoutPanel5.Controls.Add(this.label20, 0, 4);
+            this.tableLayoutPanel5.Controls.Add(this.label19, 0, 3);
+            this.tableLayoutPanel5.Controls.Add(this.label14, 0, 2);
+            this.tableLayoutPanel5.Controls.Add(this.label21, 0, 5);
+            this.tableLayoutPanel5.Controls.Add(this.label25, 2, 5);
+            this.tableLayoutPanel5.Controls.Add(this.label23, 2, 3);
+            this.tableLayoutPanel5.Controls.Add(this.label15, 2, 2);
+            this.tableLayoutPanel5.Controls.Add(this.label24, 2, 4);
+            this.tableLayoutPanel5.Controls.Add(this.JCX_Ani, 3, 2);
             this.tableLayoutPanel5.Location = new System.Drawing.Point(3, 4);
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
             this.tableLayoutPanel5.RowCount = 11;
@@ -761,7 +761,7 @@
             this.label19.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label19.AutoSize = true;
             this.label19.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label19.Location = new System.Drawing.Point(3, 88);
+            this.label19.Location = new System.Drawing.Point(3, 128);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(89, 24);
             this.label19.TabIndex = 2;
@@ -772,7 +772,7 @@
             this.label20.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label20.AutoSize = true;
             this.label20.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label20.Location = new System.Drawing.Point(3, 128);
+            this.label20.Location = new System.Drawing.Point(3, 168);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(89, 24);
             this.label20.TabIndex = 3;
@@ -783,66 +783,66 @@
             this.label21.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label21.AutoSize = true;
             this.label21.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label21.Location = new System.Drawing.Point(3, 168);
+            this.label21.Location = new System.Drawing.Point(3, 208);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(95, 24);
             this.label21.TabIndex = 4;
             this.label21.Text = "JPlane.W:";
             // 
-            // numericUpDown1
+            // frames_count
             // 
-            this.numericUpDown1.AutoSize = true;
-            this.numericUpDown1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.numericUpDown1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.numericUpDown1.Location = new System.Drawing.Point(126, 3);
-            this.numericUpDown1.Maximum = new decimal(new int[] {
-            10,
+            this.frames_count.AutoSize = true;
+            this.frames_count.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.frames_count.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.frames_count.Location = new System.Drawing.Point(126, 3);
+            this.frames_count.Maximum = new decimal(new int[] {
+            200,
             0,
             0,
             0});
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(117, 30);
-            this.numericUpDown1.TabIndex = 5;
+            this.frames_count.Name = "frames_count";
+            this.frames_count.Size = new System.Drawing.Size(117, 30);
+            this.frames_count.TabIndex = 5;
             // 
-            // textBox6
+            // JPlaneX_Ani
             // 
-            this.textBox6.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.textBox6.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.textBox6.Location = new System.Drawing.Point(127, 85);
-            this.textBox6.MaxLength = 10;
-            this.textBox6.Name = "textBox6";
-            this.textBox6.Size = new System.Drawing.Size(114, 30);
-            this.textBox6.TabIndex = 7;
-            this.textBox6.Text = "0";
+            this.JPlaneX_Ani.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.JPlaneX_Ani.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.JPlaneX_Ani.Location = new System.Drawing.Point(127, 85);
+            this.JPlaneX_Ani.MaxLength = 10;
+            this.JPlaneX_Ani.Name = "JPlaneX_Ani";
+            this.JPlaneX_Ani.Size = new System.Drawing.Size(114, 30);
+            this.JPlaneX_Ani.TabIndex = 7;
+            this.JPlaneX_Ani.Text = "0";
             // 
-            // textBox7
+            // JPlaneY_Ani
             // 
-            this.textBox7.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.textBox7.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.textBox7.Location = new System.Drawing.Point(127, 125);
-            this.textBox7.MaxLength = 10;
-            this.textBox7.Name = "textBox7";
-            this.textBox7.Size = new System.Drawing.Size(114, 30);
-            this.textBox7.TabIndex = 8;
-            this.textBox7.Text = "0";
+            this.JPlaneY_Ani.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.JPlaneY_Ani.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.JPlaneY_Ani.Location = new System.Drawing.Point(127, 125);
+            this.JPlaneY_Ani.MaxLength = 10;
+            this.JPlaneY_Ani.Name = "JPlaneY_Ani";
+            this.JPlaneY_Ani.Size = new System.Drawing.Size(114, 30);
+            this.JPlaneY_Ani.TabIndex = 8;
+            this.JPlaneY_Ani.Text = "0";
             // 
-            // textBox8
+            // JPlaneZ_Ani
             // 
-            this.textBox8.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.textBox8.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.textBox8.Location = new System.Drawing.Point(127, 165);
-            this.textBox8.MaxLength = 10;
-            this.textBox8.Name = "textBox8";
-            this.textBox8.Size = new System.Drawing.Size(114, 30);
-            this.textBox8.TabIndex = 9;
-            this.textBox8.Text = "0";
+            this.JPlaneZ_Ani.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.JPlaneZ_Ani.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.JPlaneZ_Ani.Location = new System.Drawing.Point(127, 165);
+            this.JPlaneZ_Ani.MaxLength = 10;
+            this.JPlaneZ_Ani.Name = "JPlaneZ_Ani";
+            this.JPlaneZ_Ani.Size = new System.Drawing.Size(114, 30);
+            this.JPlaneZ_Ani.TabIndex = 9;
+            this.JPlaneZ_Ani.Text = "0";
             // 
             // label23
             // 
             this.label23.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label23.AutoSize = true;
             this.label23.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label23.Location = new System.Drawing.Point(249, 88);
+            this.label23.Location = new System.Drawing.Point(249, 128);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(83, 24);
             this.label23.TabIndex = 13;
@@ -853,7 +853,7 @@
             this.label24.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label24.AutoSize = true;
             this.label24.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label24.Location = new System.Drawing.Point(249, 128);
+            this.label24.Location = new System.Drawing.Point(249, 168);
             this.label24.Name = "label24";
             this.label24.Size = new System.Drawing.Size(83, 24);
             this.label24.TabIndex = 14;
@@ -864,44 +864,44 @@
             this.label25.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label25.AutoSize = true;
             this.label25.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label25.Location = new System.Drawing.Point(249, 168);
+            this.label25.Location = new System.Drawing.Point(249, 208);
             this.label25.Name = "label25";
             this.label25.Size = new System.Drawing.Size(89, 24);
             this.label25.TabIndex = 15;
             this.label25.Text = "JuliaC.W:";
             // 
-            // textBox10
+            // JCX_Ani
             // 
-            this.textBox10.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.textBox10.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.textBox10.Location = new System.Drawing.Point(373, 85);
-            this.textBox10.MaxLength = 10;
-            this.textBox10.Name = "textBox10";
-            this.textBox10.Size = new System.Drawing.Size(114, 30);
-            this.textBox10.TabIndex = 17;
-            this.textBox10.Text = "0";
+            this.JCX_Ani.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.JCX_Ani.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.JCX_Ani.Location = new System.Drawing.Point(373, 85);
+            this.JCX_Ani.MaxLength = 10;
+            this.JCX_Ani.Name = "JCX_Ani";
+            this.JCX_Ani.Size = new System.Drawing.Size(114, 30);
+            this.JCX_Ani.TabIndex = 17;
+            this.JCX_Ani.Text = "0";
             // 
-            // textBox11
+            // JCY_Ani
             // 
-            this.textBox11.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.textBox11.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.textBox11.Location = new System.Drawing.Point(373, 125);
-            this.textBox11.MaxLength = 10;
-            this.textBox11.Name = "textBox11";
-            this.textBox11.Size = new System.Drawing.Size(114, 30);
-            this.textBox11.TabIndex = 18;
-            this.textBox11.Text = "0";
+            this.JCY_Ani.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.JCY_Ani.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.JCY_Ani.Location = new System.Drawing.Point(373, 125);
+            this.JCY_Ani.MaxLength = 10;
+            this.JCY_Ani.Name = "JCY_Ani";
+            this.JCY_Ani.Size = new System.Drawing.Size(114, 30);
+            this.JCY_Ani.TabIndex = 18;
+            this.JCY_Ani.Text = "0";
             // 
-            // textBox12
+            // JCZ_Ani
             // 
-            this.textBox12.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.textBox12.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.textBox12.Location = new System.Drawing.Point(373, 165);
-            this.textBox12.MaxLength = 10;
-            this.textBox12.Name = "textBox12";
-            this.textBox12.Size = new System.Drawing.Size(114, 30);
-            this.textBox12.TabIndex = 19;
-            this.textBox12.Text = "0";
+            this.JCZ_Ani.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.JCZ_Ani.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.JCZ_Ani.Location = new System.Drawing.Point(373, 165);
+            this.JCZ_Ani.MaxLength = 10;
+            this.JCZ_Ani.Name = "JCZ_Ani";
+            this.JCZ_Ani.Size = new System.Drawing.Size(114, 30);
+            this.JCZ_Ani.TabIndex = 19;
+            this.JCZ_Ani.Text = "0";
             // 
             // label26
             // 
@@ -919,44 +919,44 @@
             this.label14.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label14.AutoSize = true;
             this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label14.Location = new System.Drawing.Point(3, 208);
+            this.label14.Location = new System.Drawing.Point(3, 88);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(91, 24);
             this.label14.TabIndex = 20;
             this.label14.Text = "JPlane.X:";
             // 
-            // textBox1
+            // JPlaneW_Ani
             // 
-            this.textBox1.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.textBox1.Location = new System.Drawing.Point(127, 205);
-            this.textBox1.MaxLength = 10;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(114, 30);
-            this.textBox1.TabIndex = 21;
-            this.textBox1.Text = "0";
+            this.JPlaneW_Ani.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.JPlaneW_Ani.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.JPlaneW_Ani.Location = new System.Drawing.Point(127, 205);
+            this.JPlaneW_Ani.MaxLength = 10;
+            this.JPlaneW_Ani.Name = "JPlaneW_Ani";
+            this.JPlaneW_Ani.Size = new System.Drawing.Size(114, 30);
+            this.JPlaneW_Ani.TabIndex = 21;
+            this.JPlaneW_Ani.Text = "0";
             // 
             // label15
             // 
             this.label15.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label15.AutoSize = true;
             this.label15.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label15.Location = new System.Drawing.Point(249, 208);
+            this.label15.Location = new System.Drawing.Point(249, 88);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(85, 24);
             this.label15.TabIndex = 22;
             this.label15.Text = "JuliaC.X:";
             // 
-            // textBox2
+            // JCW_Ani
             // 
-            this.textBox2.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.textBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.textBox2.Location = new System.Drawing.Point(373, 205);
-            this.textBox2.MaxLength = 10;
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(114, 30);
-            this.textBox2.TabIndex = 23;
-            this.textBox2.Text = "0";
+            this.JCW_Ani.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.JCW_Ani.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.JCW_Ani.Location = new System.Drawing.Point(373, 205);
+            this.JCW_Ani.MaxLength = 10;
+            this.JCW_Ani.Name = "JCW_Ani";
+            this.JCW_Ani.Size = new System.Drawing.Size(114, 30);
+            this.JCW_Ani.TabIndex = 23;
+            this.JCW_Ani.Text = "0";
             // 
             // Form1
             // 
@@ -981,7 +981,7 @@
             this.Animations.ResumeLayout(false);
             this.tableLayoutPanel5.ResumeLayout(false);
             this.tableLayoutPanel5.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.frames_count)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1040,21 +1040,21 @@
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.Label label21;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
-        private System.Windows.Forms.TextBox textBox6;
-        private System.Windows.Forms.TextBox textBox7;
-        private System.Windows.Forms.TextBox textBox8;
+        private System.Windows.Forms.NumericUpDown frames_count;
+        private System.Windows.Forms.TextBox JPlaneX_Ani;
+        private System.Windows.Forms.TextBox JPlaneY_Ani;
+        private System.Windows.Forms.TextBox JPlaneZ_Ani;
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.Label label24;
         private System.Windows.Forms.Label label25;
-        private System.Windows.Forms.TextBox textBox10;
-        private System.Windows.Forms.TextBox textBox11;
-        private System.Windows.Forms.TextBox textBox12;
+        private System.Windows.Forms.TextBox JCX_Ani;
+        private System.Windows.Forms.TextBox JCY_Ani;
+        private System.Windows.Forms.TextBox JCZ_Ani;
         private System.Windows.Forms.Label label26;
         private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox JPlaneW_Ani;
         private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox JCW_Ani;
     }
 }
 

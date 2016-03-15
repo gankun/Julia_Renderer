@@ -50,11 +50,11 @@ namespace JuliaRenderer
 
             // Launch drawKernel on 128 threads and 128 blocks
             int i = 0;
-            int parallel = 128;
+            int parallel = 512;
             
             while (i < Julia.xres * Julia.yres)
             {             
-                GPU.Launch(1, 64)
+                GPU.Launch(1, 128)
                     .cudaDrawKernel(i, parallel, dev_R, dev_G, dev_B, Julia.xres, Julia.yres, 
                     dev_JPlane, dev_JC, Niter, Bound, Epsilon, dev_Eye);
 
