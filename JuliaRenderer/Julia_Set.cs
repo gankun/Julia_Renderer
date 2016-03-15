@@ -5,19 +5,19 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Drawing;
-using Microsoft.Xna.Framework;
 
 namespace JuliaRenderer
 {
+    
     class Julia_Set
-    {
+    {                
         public int xres;
         public int yres;
 
         public int[] Red;
         public int[] Green;
         public int[] Blue;
-
+        
         public Julia_Set(int x, int y)
         {
             xres = x;
