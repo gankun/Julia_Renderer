@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -42,6 +43,9 @@ namespace JuliaRenderer
         private float amplitude;
 
         private int shine;
+        private int framelist_count;
+        private int xres;
+        private int yres;
 
         // Fields required for animations.
         private float[] JPlane_delta;
@@ -60,7 +64,7 @@ namespace JuliaRenderer
             float Bound = 1.95F;
 
             // Initalize the Julia Set and Raytracer Class
-            Julia = new Julia_Set(500, 500);
+            Julia = new Julia_Set(800, 800);
             Tracer = new Julia_Raytracer(GPU, Bound);
 
             // Initialize all arrays needed by the app.
@@ -71,6 +75,7 @@ namespace JuliaRenderer
 
             JPlane_delta = new float[4];
             JC_delta = new float[4];
+            framelist_count = 0;
             Image_list = new System.Drawing.Bitmap[200];
         }
 
@@ -96,16 +101,30 @@ namespace JuliaRenderer
             Tracer.Amplitude = amplitude;
             Tracer.Shine = shine;
 
+            Julia.change_res(xres, yres);
+
+            // Time the render time.
+            Stopwatch stopwatch = new Stopwatch();
+
+
             // Use either the Julia Raytracer's CPU or GPU method to
             // color the Julia Set image.
             if (UseCPU.Checked)
             {
+                stopwatch.Restart();
                 Tracer.Generate_CPU(Julia, JPlane, JC);
+                stopwatch.Stop();
             }
             else
             {
+                stopwatch.Restart();
                 Tracer.Generate_GPU(Julia, JPlane, JC);
+                stopwatch.Stop();
             }
+            TimeSpan ts = stopwatch.Elapsed;
+            string elapsedtime = String.Format("\nRender Time: {0:00}Min : {1:00}Sec : {2:00}MS", ts.Minutes, ts.Seconds, ts.Milliseconds);
+
+            OutputBox.Text += elapsedtime;
 
             // Make the bitmap from the Julia Set and display to form.
             var bit = Julia.MakeBitmap();
@@ -160,9 +179,9 @@ namespace JuliaRenderer
                 Vector3 Ray = lookAt(eye, target, nx, ny, 2.0F);
 
                 var Background = new Vector3(
-                    .3F + (.25F * nx),
-                   .6F, 
-                   .7F + (.2F * ny));
+                    .5F + (.2F * nx),
+                   .5F + (.1F * ny + .07F * nx), 
+                   .5F + (.2F * ny));
 
 
                 var Color = Background;
@@ -673,6 +692,8 @@ namespace JuliaRenderer
             Tracer.Amplitude = amplitude;
             Tracer.Shine = shine;
 
+            Julia.change_res(xres, yres);
+
             // Render each frame one at a time and then display them.
             // After displaying each frame, apply the change to the
             // Plane and constant values and re-render the image.
@@ -709,6 +730,7 @@ namespace JuliaRenderer
                 JC[2] += JC_delta[2];
                 JC[3] += JC_delta[3];
             }
+            framelist_count = (int) frames_count.Value;
         }
 
         // Verify that the values required for Rendering images in the
@@ -820,6 +842,34 @@ namespace JuliaRenderer
                 Valid = false;
             }
 
+            bool parsed_X = true;
+            parsed_X &= Int32.TryParse(XRes_In.Text, out xres);
+
+            if (!parsed_X)
+            {
+                OutputBox.Text += "\nValue for X Res must be a positive integer";
+                Valid = false;
+            }
+            if (xres <= 0)
+            {
+                OutputBox.Text += "\nValue for X Res must be a positive integer";
+                Valid = false;
+            }
+
+            bool parsed_Y = true;
+            parsed_Y &= Int32.TryParse(YRes_In.Text, out yres);
+
+            if (!parsed_Y)
+            {
+                OutputBox.Text += "\nValue for Y Res must be a positive integer";
+                Valid = false;
+            }
+            if (yres <= 0)
+            {
+                OutputBox.Text += "\nValue for Y Res must be a positive integer";
+                Valid = false;
+            }
+
             return Valid;
         }
 
@@ -851,6 +901,17 @@ namespace JuliaRenderer
             }
 
             return Validate_Render_Fields() && parsed_Plane_D && parsed_C_D;
+        }
+
+        private void replayButton_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < framelist_count; i++)
+            {
+
+                pictureBox1.Image = Image_list[i];
+                Task.Delay(500).Wait();
+                pictureBox1.Refresh();
+            }
         }
 
      

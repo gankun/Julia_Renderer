@@ -31,6 +31,20 @@ namespace JuliaRenderer
             for (int i = 0; i < xres * yres; i++) { Blue[i] = 0; }
         }
 
+        public void change_res(int new_xres, int new_yres)
+        {
+            xres = new_xres;
+            yres = new_yres;
+
+            Red = new int[xres * yres];
+            Green = new int[xres * yres];
+            Blue = new int[xres * yres];
+
+            for (int i = 0; i < xres * yres; i++) { Red[i] = 0; }
+            for (int i = 0; i < xres * yres; i++) { Green[i] = 0; }
+            for (int i = 0; i < xres * yres; i++) { Blue[i] = 0; }
+        }
+
        
         public void Print_PPM(string Save_file)
         {
