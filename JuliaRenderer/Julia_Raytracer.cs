@@ -12,22 +12,33 @@ namespace JuliaRenderer
 {
     class Julia_Raytracer
     {
-
-        private float Bound = 2;
-        public float Epsilon = .001F;
-        public int Niter = 3;
         private Cudafy.Host.GPGPU GPU;
+        private float Bound;
+
+        public float Epsilon;
+        public float Delta;
+        public float Amplitude;
+        public int Shine;
+        public int Niter;
+        public float[] Eye;
+        public float[] Light;
         
-        public Julia_Raytracer(Cudafy.Host.GPGPU gpu, int niter, float epsilon, float bound)
+        public Julia_Raytracer(Cudafy.Host.GPGPU gpu, float bound)
         {
             //setup2();
             GPU = gpu;
             Bound = bound;
-            Niter = niter;
-            Epsilon = epsilon;  
+            Niter = 1;
+            Epsilon = .01F;
+            Delta = .01F;
+            Shine = 6;
+            Amplitude = .45F;
+
+            Eye = new float[3] {0, 0, 5};
+            Light = new float[3] {3, 3, 4};
         }
        
-        public void Generate_GPU(Julia_Set Julia, float[] JPlane, float[] JC, float[] Eye)
+        public void Generate_GPU(Julia_Set Julia, float[] JPlane, float[] JC)
         {
             var xres = Julia.xres;
             var yres = Julia.yres;
@@ -39,6 +50,7 @@ namespace JuliaRenderer
             float[] dev_JPlane = GPU.Allocate<float>(4);
             float[] dev_JC = GPU.Allocate<float>(4);
             float[] dev_Eye = GPU.Allocate<float>(3);
+            float[] dev_Light = GPU.Allocate<float>(3);
 
             // Copy arrays from Julia_Set to GPU
             GPU.CopyToDevice(Julia.Red, dev_R);
@@ -47,6 +59,7 @@ namespace JuliaRenderer
             GPU.CopyToDevice(JPlane, dev_JPlane);
             GPU.CopyToDevice(JC, dev_JC);
             GPU.CopyToDevice(Eye, dev_Eye);
+            GPU.CopyToDevice(Light, dev_Light);
 
             // Launch drawKernel on 128 threads and 128 blocks
             int i = 0;
@@ -55,8 +68,9 @@ namespace JuliaRenderer
             while (i < Julia.xres * Julia.yres)
             {             
                 GPU.Launch(1, 128)
-                    .cudaDrawKernel(i, parallel, dev_R, dev_G, dev_B, Julia.xres, Julia.yres, 
-                    dev_JPlane, dev_JC, Niter, Bound, Epsilon, dev_Eye);
+                    .cudaDrawKernel(i, parallel, dev_R, dev_G, dev_B, 
+                    Julia.xres, Julia.yres, dev_JPlane, dev_JC, dev_Eye, 
+                    dev_Light, Niter, Bound, Epsilon, Delta, Amplitude, Shine);
 
                 i += parallel;
             }
@@ -73,6 +87,7 @@ namespace JuliaRenderer
             GPU.Free(dev_JPlane);
             GPU.Free(dev_JC);
             GPU.Free(dev_Eye);
+            GPU.Free(dev_Light);
         }
 
         /* 
@@ -80,7 +95,7 @@ namespace JuliaRenderer
          * a constant & Plane value. This approach uses the CPU to compute each pixel.
          * There is no parallelization used.
          */ 
-        public void Generate_CPU(Julia_Set Julia, float[] JPlane_I, float[] JC_I, float[] Eye)
+        public void Generate_CPU(Julia_Set Julia, float[] JPlane_I, float[] JC_I)
         {
             var JPlane = new Form1.Vector4(JPlane_I[0], JPlane_I[1], JPlane_I[2], JPlane_I[3]);
             var JC = new Form1.Vector4(JC_I[0], JC_I[1], JC_I[2], JC_I[3]);
@@ -112,7 +127,8 @@ namespace JuliaRenderer
                     // Use raytracing for each pixel
                     int exponent = 2;
                     var Color = Form1.Raytrace(eye, Ray, light, eye, Background,
-                        JPlane, JC, exponent, Niter, Bound, Epsilon);
+                        JPlane, JC, exponent, Niter, Bound, Epsilon, Delta,
+                        Amplitude, Shine);
 
                     // Assign each color to the matrix
                     Julia.Red[y * Julia.xres + x] = (int)(Color.X * 255);

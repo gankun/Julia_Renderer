@@ -14,17 +14,36 @@ using Cudafy.Translator;
 
 namespace JuliaRenderer
 {
+    /*
+     * Class to handle events on the form.
+     * 
+     * TODO:
+     * Unfortunately the code is not as organized as I would like.
+     * Due to having issues with Cudafy not translating GPU code
+     * on other class/files all CUDA code is currently
+     * stored here. Will clean up later.
+     * 
+     */
     public partial class Form1 : Form
     {
-
+        // Fields for drawing the Julia Set.
         private Julia_Set Julia;
         private Julia_Raytracer Tracer;
+
         private System.Drawing.Bitmap[] Image_list;
+
         private float[] JPlane;
         private float[] JC;
         private float[] Eye;
-        private float epsilon;
+        private float[] Light;
 
+        private float epsilon;
+        private float delta;
+        private float amplitude;
+
+        private int shine;
+
+        // Fields required for animations.
         private float[] JPlane_delta;
         private float[] JC_delta;
 
@@ -37,19 +56,22 @@ namespace JuliaRenderer
 
             InitializeComponent();
 
+            // Bounding Sphere for the Julia Raytracer.
+            float Bound = 1.95F;
+
+            // Initalize the Julia Set and Raytracer Class
             Julia = new Julia_Set(500, 500);
-            Tracer = new Julia_Raytracer(GPU, 1, .01F, 1.99F);
+            Tracer = new Julia_Raytracer(GPU, Bound);
 
+            // Initialize all arrays needed by the app.
+            JPlane = new float[4];
+            JC = new float[4];
+            Eye = new float[3];
+            Light = new float[3];
+
+            JPlane_delta = new float[4];
+            JC_delta = new float[4];
             Image_list = new System.Drawing.Bitmap[200];
-
-            // Initialize all values that will go in fields.
-             JPlane = new float[4];
-             JC = new float[4];
-             Eye = new float[3];
-
-             JPlane_delta = new float[4];
-             JC_delta = new float[4];
-
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -59,32 +81,36 @@ namespace JuliaRenderer
 
         private void renderButton_Click_1(object sender, EventArgs e)
         {
-
-            // Get values to use from the Windows form.
-
-            int iter = (int) Iteration_Count.Value;
-
-            if (!Validate_Fields(false))
+            // Validate the fields in the windows form.
+            if (!Validate_Render_Fields())
             {
                 return;
             }
 
+            // Update fields for the Raytracer.
             Tracer.Epsilon = epsilon;
-            Tracer.Niter = (int) Iteration_Count.Value;
-            
+            Tracer.Delta = delta;
+            Tracer.Niter = (int)Iteration_Count.Value;
+            Tracer.Eye = Eye;
+            Tracer.Light = Light;
+            Tracer.Amplitude = amplitude;
+            Tracer.Shine = shine;
+
+            // Use either the Julia Raytracer's CPU or GPU method to
+            // color the Julia Set image.
             if (UseCPU.Checked)
             {
-                Tracer.Generate_CPU(Julia, JPlane, JC, Eye);
+                Tracer.Generate_CPU(Julia, JPlane, JC);
             }
             else
             {
-                Tracer.Generate_GPU(Julia, JPlane, JC, Eye);
+                Tracer.Generate_GPU(Julia, JPlane, JC);
             }
 
+            // Make the bitmap from the Julia Set and display to form.
             var bit = Julia.MakeBitmap();
             pictureBox1.Image = bit;
             pictureBox1.Invalidate();  
-
         }
         
         /*
@@ -104,18 +130,18 @@ namespace JuliaRenderer
          */
         [Cudafy]
         public static void cudaDrawKernel(GThread thread, int startID, int runs, int[] R, int[] G, int[] B,
-            int xres, int yres, float[] JPlane_I, float[] JC_I,
-            int niter, float bound, float epsilon, float[] Eye)
+            int xres, int yres, float[] JPlane_I, float[] JC_I, float[] Eye_I, float[] Light_I,
+            int niter, float bound, float epsilon, float delta, float amplitude, int shine)
         {
             Vector4 JPlane = new Vector4(JPlane_I[0], JPlane_I[1], JPlane_I[2], JPlane_I[3]);
             Vector4 JC = new Vector4(JC_I[0], JC_I[1], JC_I[2], JC_I[3]);
-            Vector3 eye = new Vector3(Eye[0], Eye[1], Eye[2]);
+            Vector3 eye = new Vector3(Eye_I[0], Eye_I[1], Eye_I[2]);
+            Vector3 light = new Vector3(Light_I[0], Light_I[1], Light_I[2]);
 
-            int tid = thread.threadIdx.x + startID;
-            Vector3 light = new Vector3(2.5F, -2F, 4F);
-            light = new Vector3(.1F, 0F, 4F);
             Vector3 target = new Vector3(0F, 0F, 0F);
 
+            int tid = thread.threadIdx.x + startID;
+                       
             while (tid < xres * yres)
             {
                 if (tid > startID + runs)
@@ -143,7 +169,7 @@ namespace JuliaRenderer
                 // Use raytracing for each pixel
                 int exponent = 2;
                 Color = Raytrace(eye, Ray, light, eye, Background,
-                   JPlane, JC, exponent, niter, bound, epsilon);
+                   JPlane, JC, exponent, niter, bound, epsilon, delta, amplitude, shine);
    
                 R[y * xres + x] = (int)(Color.X * 255);
                 G[y * xres + x] = (int)(Color.Y * 255);
@@ -161,7 +187,7 @@ namespace JuliaRenderer
             Vector3 r0, Vector3 rd, Vector3 light,
             Vector3 eye, Vector3 backColor, Vector4 julia_Plane,
             Vector4 julia_C, int exponent, int niter, float bound,
-            float epsilon)
+            float epsilon, float delta, float amplitude, int shine)
         {
             float WALL_X = 0;
             float WALL_Y = 0;
@@ -189,11 +215,11 @@ namespace JuliaRenderer
                 {
                     // Determine the normal at the Julia Point to calculate shading
                     Vector3 normal = EstimateNormalQJulia(r0, julia_C, julia_Plane,
-                                 rd, exponent, niter, bound, epsilon);
+                                 rd, exponent, niter, bound, epsilon, delta);
 
                     // Use Phong Shading model to determine color
 
-                    Vector3 rgb = Phong(light, eye, r0, normal);
+                    Vector3 rgb = Phong(light, eye, r0, normal, amplitude, shine);
 
 
                     // Pass the color to determine shadows
@@ -289,9 +315,9 @@ namespace JuliaRenderer
 
         [Cudafy]
         private static Vector3 EstimateNormalQJulia(Vector3 p, Vector4 c, Vector4 d,
-            Vector3 ray, int exponent, int niter, float bound, float epsilon)
+            Vector3 ray, int exponent, int niter, float bound, float epsilon, float delta)
         {
-            float DELTA = .001F;
+            float DELTA = delta;
 
             Vector3 px1 = new Vector3(p.X - DELTA, p.Y, p.Z);
             Vector3 px2 = new Vector3(p.X + DELTA, p.Y, p.Z);
@@ -318,7 +344,8 @@ namespace JuliaRenderer
         // Compute the color for a point due to a point light
         // and a spotlight at the eye.
         [Cudafy]
-        private static Vector3 Phong(Vector3 light, Vector3 eye, Vector3 p, Vector3 N)
+        private static Vector3 Phong(Vector3 light, Vector3 eye, Vector3 p, Vector3 N,
+            float amp, int shine)
         {
 
             // set the base color of the set
@@ -326,11 +353,6 @@ namespace JuliaRenderer
             dif = new Vector3(.50F, .80F, .45F);
 
             dif = new Vector3(.30F, .80F, .95F);
-
-            // shininess and the amplitude of highlight
-            const int shine = 5;
-            //const float amp = .45F;
-            const float amp = .6F;
 
             Vector3 LV = Normalize3(Sub3(light, p)); // vector to the light source
             Vector3 EV = Normalize3(Sub3(eye, p));   // vector to the eye
@@ -638,37 +660,45 @@ namespace JuliaRenderer
             // We do this by saving up to 100 frames and then displaying them.
 
             // Get values to use from the Windows form.
-
-            int iter = (int)Iteration_Count.Value;
-
-            if (!Validate_Fields(true))
+            if (!Validate_Animate_Fields())
             {
                 return;
             }
 
             Tracer.Epsilon = epsilon;
+            Tracer.Delta = delta;
             Tracer.Niter = (int)Iteration_Count.Value;
+            Tracer.Eye = Eye;
+            Tracer.Light = Light;
+            Tracer.Amplitude = amplitude;
+            Tracer.Shine = shine;
 
+            // Render each frame one at a time and then display them.
+            // After displaying each frame, apply the change to the
+            // Plane and constant values and re-render the image.
             for (int i = 0; i < (int)frames_count.Value; i++)
             {
-               
-
+                // Use either GPU or CPU to compute the images.
                 if (UseCPU.Checked)
                 {
-                    Tracer.Generate_CPU(Julia, JPlane, JC, Eye);
+                    Tracer.Generate_CPU(Julia, JPlane, JC);
                 }
                 else
                 {
-                    Tracer.Generate_GPU(Julia, JPlane, JC, Eye);
+                    Tracer.Generate_GPU(Julia, JPlane, JC);
                 }
 
+                // Make the bitmap from the Julia set's color values
+                // and then refresh the forms image box.
                 var bit = Julia.MakeBitmap();
-                pictureBox1.Image = bit;
-                
+                pictureBox1.Image = bit;                
                 pictureBox1.Refresh();
 
+                // Save bitmap to a list of images.
+                // TODO: Save/ Convert this as a movie clip.
                 Image_list[i] = bit;
 
+                // Apply change to the Julia Set Parameters.
                 JPlane[0] += JPlane_delta[0];
                 JPlane[1] += JPlane_delta[1];
                 JPlane[2] += JPlane_delta[2];
@@ -678,14 +708,15 @@ namespace JuliaRenderer
                 JC[1] += JC_delta[1];
                 JC[2] += JC_delta[2];
                 JC[3] += JC_delta[3];
-                
-
             }
         }
 
-        private bool Validate_Fields(bool Animate)
+        // Verify that the values required for Rendering images in the
+        // Windows form are all valid.
+        // Update the form's relevant fields and return true if all valid.
+        private bool Validate_Render_Fields()
         {
-
+            bool Valid = true;
             bool parsed_Plane = true;
             parsed_Plane &= float.TryParse(JPlaneX_In.Text, out JPlane[0]);
             parsed_Plane &= float.TryParse(JPlaneY_In.Text, out JPlane[1]);
@@ -694,6 +725,7 @@ namespace JuliaRenderer
             if (!parsed_Plane)
             {
                 OutputBox.Text += "\nAll values for JPlane must be a valid float";
+                Valid = false;
             }
 
             bool parsed_C = true;
@@ -705,6 +737,7 @@ namespace JuliaRenderer
             if (!parsed_C)
             {
                 OutputBox.Text += "\nAll values for JC must be a valid float";
+                Valid = false;
             }
 
             bool parsed_Eye = true;
@@ -715,29 +748,92 @@ namespace JuliaRenderer
             if (!parsed_Eye)
             {
                 OutputBox.Text += "\nAll values for Eye must be a valid float";
+                Valid = false;
             }
+
+            bool parsed_Light = true;
+            parsed_Light &= float.TryParse(LightX_In.Text, out Light[0]);
+            parsed_Light &= float.TryParse(LightY_In.Text, out Light[1]);
+            parsed_Light &= float.TryParse(LightZ_In.Text, out Light[2]);
+
+            if (!parsed_Light)
+            {
+                OutputBox.Text += "\nAll values for Light must be a valid float";
+                Valid = false;
+            }
+
             bool parsed_epsilon = true;
             parsed_epsilon &= float.TryParse(Epsilon_In.Text, out epsilon);
 
             if (!parsed_epsilon)
             {
-                OutputBox.Text = "Value for Epsilon must be a float greater than zero";
+                OutputBox.Text += "\nValue for Epsilon must be a float greater than zero";
+                Valid = false;
             }
             if (epsilon <= 0)
             {
-                OutputBox.Text = "Value for Epsilon must be a float greater than zero";
-            }
-            // If not animating, no need for further fields.
-            if (!Animate)
-            {
-                return (parsed_Eye && parsed_C && parsed_Plane && parsed_epsilon);
+                OutputBox.Text += "\nValue for Epsilon must be a float greater than zero";
+                Valid = false;
             }
 
+            bool parsed_delta = true;
+            parsed_delta &= float.TryParse(Delta_In.Text, out delta);
+
+            if (!parsed_delta)
+            {
+                OutputBox.Text += "\nValue for Delta must be a float greater than zero";
+                Valid = false;
+            }
+            if (delta <= 0)
+            {
+                OutputBox.Text += "\nValue for Delta must be a float greater than zero";
+                Valid = false;
+            }
+
+
+            bool parsed_amplitude = true;
+            parsed_amplitude &= float.TryParse(Amp_In.Text, out amplitude);
+
+            if (!parsed_amplitude)
+            {
+                OutputBox.Text += "\nValue for Amplitude must be a float between 0 and 1";
+                Valid = false;
+            }
+            if (amplitude >= 1 || amplitude <= 0)
+            {
+                OutputBox.Text += "\nValue for Amplitude must be a float between 0 and 1";
+                Valid = false;
+            }
+
+
+            bool parsed_shine = true;
+            parsed_shine &= Int32.TryParse(Shine_In.Text, out shine);
+
+            if (!parsed_shine)
+            {
+                OutputBox.Text += "\nValue for Shine must be a positive integer";
+                Valid = false;
+            }
+            if (shine <= 0)
+            {
+                OutputBox.Text += "\nValue for Shine must be a positive integer";
+                Valid = false;
+            }
+
+            return Valid;
+        }
+
+        // Verify that the values required for Animating images in the
+        // Windows form are all valid.
+        // Update the form's relevant fields and return true if all valid.
+        private bool Validate_Animate_Fields()
+        {
             bool parsed_Plane_D = true;
             parsed_Plane_D &= float.TryParse(JPlaneX_Ani.Text, out JPlane_delta[0]);
             parsed_Plane_D &= float.TryParse(JPlaneY_Ani.Text, out JPlane_delta[1]);
             parsed_Plane_D &= float.TryParse(JPlaneZ_Ani.Text, out JPlane_delta[2]);
             parsed_Plane_D &= float.TryParse(JPlaneW_Ani.Text, out JPlane_delta[3]);
+
             if (!parsed_Plane_D)
             {
                 OutputBox.Text += "\nAll values for JPlane Delta must be a valid float";
@@ -749,12 +845,12 @@ namespace JuliaRenderer
             parsed_C_D &= float.TryParse(JCZ_Ani.Text, out JC_delta[2]);
             parsed_C_D &= float.TryParse(JCW_Ani.Text, out JC_delta[3]);
 
-            if (!parsed_C)
+            if (!parsed_C_D)
             {
                 OutputBox.Text += "\nAll values for JC Delta must be a valid float";
             }
 
-            return parsed_Plane_D && parsed_C_D;
+            return Validate_Render_Fields() && parsed_Plane_D && parsed_C_D;
         }
 
      
