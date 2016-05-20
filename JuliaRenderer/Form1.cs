@@ -178,10 +178,16 @@ namespace JuliaRenderer
                 
                 Vector3 Ray = lookAt(eye, target, nx, ny, 2.0F);
 
+                // Background color
                 var Background = new Vector3(
-                    .5F + (.2F * nx),
-                   .5F + (.1F * ny + .07F * nx), 
-                   .5F + (.2F * ny));
+                    .65F + (.05F * nx),
+                   .73F + (.1F * ny + .03F * nx), 
+                   .5F + (.2F * ny));  // light blue - orange
+
+                Background = new Vector3(
+                    .9F + (.05F * nx / 2),
+                   .5F + (.075F * ny + .06F * nx),
+                   .3F + (.05F * ny));  // light red - orange
 
 
                 var Color = Background;
@@ -367,11 +373,14 @@ namespace JuliaRenderer
             float amp, int shine)
         {
 
+            Vector3 temp = Normalize3(p);
+
+
             // set the base color of the set
             Vector3 dif = new Vector3(.10F, .50F, .85F);
-            dif = new Vector3(.50F, .80F, .45F);
-
-            dif = new Vector3(.30F, .80F, .95F);
+            dif = new Vector3(.50F, .80F , .45F);
+            // BASECOLOR
+            dif = new Vector3(.30F, .35F * (1 - (temp.Y + temp.X)) , 1F * (temp.Z));
 
             Vector3 LV = Normalize3(Sub3(light, p)); // vector to the light source
             Vector3 EV = Normalize3(Sub3(eye, p));   // vector to the eye

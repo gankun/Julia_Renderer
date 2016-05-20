@@ -31,6 +31,12 @@
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.saveButton = new System.Windows.Forms.Button();
+            this.renderButton = new System.Windows.Forms.Button();
+            this.replayButton = new System.Windows.Forms.Button();
+            this.animateButton = new System.Windows.Forms.Button();
+            this.OutputBox = new System.Windows.Forms.RichTextBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.Parameters = new System.Windows.Forms.TabPage();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
@@ -76,6 +82,10 @@
             this.LightY_In = new System.Windows.Forms.TextBox();
             this.LightZ_In = new System.Windows.Forms.TextBox();
             this.UseShadow = new System.Windows.Forms.CheckBox();
+            this.XRes_In = new System.Windows.Forms.TextBox();
+            this.label33 = new System.Windows.Forms.Label();
+            this.YRes_In = new System.Windows.Forms.TextBox();
+            this.label32 = new System.Windows.Forms.Label();
             this.Colors = new System.Windows.Forms.TabPage();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
@@ -103,20 +113,11 @@
             this.label15 = new System.Windows.Forms.Label();
             this.label24 = new System.Windows.Forms.Label();
             this.JCX_Ani = new System.Windows.Forms.TextBox();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.saveButton = new System.Windows.Forms.Button();
-            this.renderButton = new System.Windows.Forms.Button();
-            this.replayButton = new System.Windows.Forms.Button();
-            this.animateButton = new System.Windows.Forms.Button();
-            this.OutputBox = new System.Windows.Forms.RichTextBox();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
-            this.label32 = new System.Windows.Forms.Label();
-            this.label33 = new System.Windows.Forms.Label();
-            this.YRes_In = new System.Windows.Forms.TextBox();
-            this.XRes_In = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tableLayoutPanel3.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.Parameters.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -128,7 +129,6 @@
             this.Animations.SuspendLayout();
             this.tableLayoutPanel5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.frames_count)).BeginInit();
-            this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // openFileDialog1
@@ -145,7 +145,6 @@
             this.pictureBox1.Location = new System.Drawing.Point(3, 3);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(623, 494);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
@@ -170,6 +169,85 @@
             this.tableLayoutPanel3.TabIndex = 1;
             this.tableLayoutPanel3.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel3_Paint);
             // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 2;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.Controls.Add(this.saveButton, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.renderButton, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.replayButton, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.animateButton, 0, 1);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(632, 503);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 2;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(510, 99);
+            this.tableLayoutPanel1.TabIndex = 3;
+            // 
+            // saveButton
+            // 
+            this.saveButton.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.saveButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.saveButton.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.saveButton.Location = new System.Drawing.Point(258, 3);
+            this.saveButton.Name = "saveButton";
+            this.saveButton.Size = new System.Drawing.Size(249, 43);
+            this.saveButton.TabIndex = 11;
+            this.saveButton.Text = "Save";
+            this.saveButton.UseVisualStyleBackColor = true;
+            this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
+            // 
+            // renderButton
+            // 
+            this.renderButton.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.renderButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.renderButton.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.renderButton.Location = new System.Drawing.Point(3, 3);
+            this.renderButton.Name = "renderButton";
+            this.renderButton.Size = new System.Drawing.Size(249, 43);
+            this.renderButton.TabIndex = 10;
+            this.renderButton.Text = "Render";
+            this.renderButton.UseVisualStyleBackColor = true;
+            this.renderButton.Click += new System.EventHandler(this.renderButton_Click_1);
+            // 
+            // replayButton
+            // 
+            this.replayButton.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.replayButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.replayButton.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.replayButton.Location = new System.Drawing.Point(258, 52);
+            this.replayButton.Name = "replayButton";
+            this.replayButton.Size = new System.Drawing.Size(249, 43);
+            this.replayButton.TabIndex = 13;
+            this.replayButton.Text = "Replay";
+            this.replayButton.UseVisualStyleBackColor = true;
+            this.replayButton.Click += new System.EventHandler(this.replayButton_Click);
+            // 
+            // animateButton
+            // 
+            this.animateButton.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.animateButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.animateButton.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.animateButton.Location = new System.Drawing.Point(3, 52);
+            this.animateButton.Name = "animateButton";
+            this.animateButton.Size = new System.Drawing.Size(249, 43);
+            this.animateButton.TabIndex = 12;
+            this.animateButton.Text = "Animate";
+            this.animateButton.UseVisualStyleBackColor = true;
+            this.animateButton.Click += new System.EventHandler(this.animateButton_Click);
+            // 
+            // OutputBox
+            // 
+            this.OutputBox.Dock = System.Windows.Forms.DockStyle.Top;
+            this.OutputBox.Location = new System.Drawing.Point(3, 503);
+            this.OutputBox.Name = "OutputBox";
+            this.OutputBox.ReadOnly = true;
+            this.OutputBox.Size = new System.Drawing.Size(623, 99);
+            this.OutputBox.TabIndex = 11;
+            this.OutputBox.Text = "";
+            // 
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.Parameters);
@@ -191,7 +269,7 @@
             this.Parameters.Location = new System.Drawing.Point(4, 33);
             this.Parameters.Name = "Parameters";
             this.Parameters.Padding = new System.Windows.Forms.Padding(3);
-            this.Parameters.Size = new System.Drawing.Size(488, 441);
+            this.Parameters.Size = new System.Drawing.Size(512, 457);
             this.Parameters.TabIndex = 0;
             this.Parameters.Text = "Parameters";
             this.Parameters.UseVisualStyleBackColor = true;
@@ -584,7 +662,7 @@
             this.RayTracing.Controls.Add(this.tableLayoutPanel4);
             this.RayTracing.Location = new System.Drawing.Point(4, 33);
             this.RayTracing.Name = "RayTracing";
-            this.RayTracing.Size = new System.Drawing.Size(580, 441);
+            this.RayTracing.Size = new System.Drawing.Size(512, 457);
             this.RayTracing.TabIndex = 2;
             this.RayTracing.Text = "RayTracing";
             this.RayTracing.UseVisualStyleBackColor = true;
@@ -752,13 +830,57 @@
             this.UseShadow.Text = "Use Shadow";
             this.UseShadow.UseVisualStyleBackColor = true;
             // 
+            // XRes_In
+            // 
+            this.XRes_In.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.XRes_In.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.XRes_In.Location = new System.Drawing.Point(136, 325);
+            this.XRes_In.MaxLength = 10;
+            this.XRes_In.Name = "XRes_In";
+            this.XRes_In.Size = new System.Drawing.Size(114, 30);
+            this.XRes_In.TabIndex = 27;
+            this.XRes_In.Text = "500";
+            // 
+            // label33
+            // 
+            this.label33.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label33.AutoSize = true;
+            this.label33.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.label33.Location = new System.Drawing.Point(3, 368);
+            this.label33.Name = "label33";
+            this.label33.Size = new System.Drawing.Size(65, 24);
+            this.label33.TabIndex = 25;
+            this.label33.Text = "Y Res:";
+            // 
+            // YRes_In
+            // 
+            this.YRes_In.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.YRes_In.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.YRes_In.Location = new System.Drawing.Point(136, 365);
+            this.YRes_In.MaxLength = 10;
+            this.YRes_In.Name = "YRes_In";
+            this.YRes_In.Size = new System.Drawing.Size(114, 30);
+            this.YRes_In.TabIndex = 26;
+            this.YRes_In.Text = "500";
+            // 
+            // label32
+            // 
+            this.label32.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label32.AutoSize = true;
+            this.label32.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.label32.Location = new System.Drawing.Point(3, 328);
+            this.label32.Name = "label32";
+            this.label32.Size = new System.Drawing.Size(67, 24);
+            this.label32.TabIndex = 24;
+            this.label32.Text = "X Res:";
+            // 
             // Colors
             // 
             this.Colors.Controls.Add(this.tableLayoutPanel6);
             this.Colors.Location = new System.Drawing.Point(4, 33);
             this.Colors.Name = "Colors";
             this.Colors.Padding = new System.Windows.Forms.Padding(3);
-            this.Colors.Size = new System.Drawing.Size(580, 441);
+            this.Colors.Size = new System.Drawing.Size(512, 457);
             this.Colors.TabIndex = 1;
             this.Colors.Text = "Colors";
             this.Colors.UseVisualStyleBackColor = true;
@@ -1095,132 +1217,9 @@
             this.JCX_Ani.TabIndex = 17;
             this.JCX_Ani.Text = "0";
             // 
-            // tableLayoutPanel1
-            // 
-            this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Controls.Add(this.saveButton, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.renderButton, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.replayButton, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.animateButton, 0, 1);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(632, 503);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 2;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(510, 99);
-            this.tableLayoutPanel1.TabIndex = 3;
-            // 
-            // saveButton
-            // 
-            this.saveButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.saveButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.saveButton.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.saveButton.Location = new System.Drawing.Point(258, 3);
-            this.saveButton.Name = "saveButton";
-            this.saveButton.Size = new System.Drawing.Size(249, 43);
-            this.saveButton.TabIndex = 11;
-            this.saveButton.Text = "Save";
-            this.saveButton.UseVisualStyleBackColor = true;
-            this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
-            // 
-            // renderButton
-            // 
-            this.renderButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.renderButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.renderButton.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.renderButton.Location = new System.Drawing.Point(3, 3);
-            this.renderButton.Name = "renderButton";
-            this.renderButton.Size = new System.Drawing.Size(249, 43);
-            this.renderButton.TabIndex = 10;
-            this.renderButton.Text = "Render";
-            this.renderButton.UseVisualStyleBackColor = true;
-            this.renderButton.Click += new System.EventHandler(this.renderButton_Click_1);
-            // 
-            // replayButton
-            // 
-            this.replayButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.replayButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.replayButton.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.replayButton.Location = new System.Drawing.Point(258, 52);
-            this.replayButton.Name = "replayButton";
-            this.replayButton.Size = new System.Drawing.Size(249, 43);
-            this.replayButton.TabIndex = 13;
-            this.replayButton.Text = "Replay";
-            this.replayButton.UseVisualStyleBackColor = true;
-            this.replayButton.Click += new System.EventHandler(this.replayButton_Click);
-            // 
-            // animateButton
-            // 
-            this.animateButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.animateButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.animateButton.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.animateButton.Location = new System.Drawing.Point(3, 52);
-            this.animateButton.Name = "animateButton";
-            this.animateButton.Size = new System.Drawing.Size(249, 43);
-            this.animateButton.TabIndex = 12;
-            this.animateButton.Text = "Animate";
-            this.animateButton.UseVisualStyleBackColor = true;
-            this.animateButton.Click += new System.EventHandler(this.animateButton_Click);
-            // 
-            // OutputBox
-            // 
-            this.OutputBox.Dock = System.Windows.Forms.DockStyle.Top;
-            this.OutputBox.Location = new System.Drawing.Point(3, 503);
-            this.OutputBox.Name = "OutputBox";
-            this.OutputBox.ReadOnly = true;
-            this.OutputBox.Size = new System.Drawing.Size(623, 99);
-            this.OutputBox.TabIndex = 11;
-            this.OutputBox.Text = "";
-            // 
             // saveFileDialog1
             // 
             this.saveFileDialog1.DefaultExt = "ppm";
-            // 
-            // label32
-            // 
-            this.label32.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label32.AutoSize = true;
-            this.label32.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label32.Location = new System.Drawing.Point(3, 328);
-            this.label32.Name = "label32";
-            this.label32.Size = new System.Drawing.Size(67, 24);
-            this.label32.TabIndex = 24;
-            this.label32.Text = "X Res:";
-            // 
-            // label33
-            // 
-            this.label33.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label33.AutoSize = true;
-            this.label33.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label33.Location = new System.Drawing.Point(3, 368);
-            this.label33.Name = "label33";
-            this.label33.Size = new System.Drawing.Size(65, 24);
-            this.label33.TabIndex = 25;
-            this.label33.Text = "Y Res:";
-            // 
-            // YRes_In
-            // 
-            this.YRes_In.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.YRes_In.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.YRes_In.Location = new System.Drawing.Point(136, 365);
-            this.YRes_In.MaxLength = 10;
-            this.YRes_In.Name = "YRes_In";
-            this.YRes_In.Size = new System.Drawing.Size(114, 30);
-            this.YRes_In.TabIndex = 26;
-            this.YRes_In.Text = "500";
-            // 
-            // XRes_In
-            // 
-            this.XRes_In.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.XRes_In.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.XRes_In.Location = new System.Drawing.Point(136, 325);
-            this.XRes_In.MaxLength = 10;
-            this.XRes_In.Name = "XRes_In";
-            this.XRes_In.Size = new System.Drawing.Size(114, 30);
-            this.XRes_In.TabIndex = 27;
-            this.XRes_In.Text = "500";
             // 
             // Form1
             // 
@@ -1233,7 +1232,7 @@
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.tableLayoutPanel3.ResumeLayout(false);
-            this.tableLayoutPanel3.PerformLayout();
+            this.tableLayoutPanel1.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
             this.Parameters.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
@@ -1249,7 +1248,6 @@
             this.tableLayoutPanel5.ResumeLayout(false);
             this.tableLayoutPanel5.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.frames_count)).EndInit();
-            this.tableLayoutPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
